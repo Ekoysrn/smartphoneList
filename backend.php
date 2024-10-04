@@ -1,158 +1,163 @@
-<?php 
-    // koneksi ke database
-    $conn = mysqli_connect("localhost","root","","allsmartphone");
+<?php
+// koneksi ke database
+$conn = mysqli_connect("localhost", "root", "", "allsmartphone");
 
-    // membuat function agar bisa dilooping di fe
-    function query($result){
-        global $conn;
-        $ds = mysqli_query($conn, $result);
-        $as = [];
-        
-        // looping
-        while($rd = mysqli_fetch_array($ds)){
-            $as[] = $rd;
-        }
-        return $as;
-    }
+// membuat function agar bisa dilooping di fe
+function query($result)
+{
+  global $conn;
+  $ds = mysqli_query($conn, $result);
+  $as = [];
 
-    // $np = "INSERT INTO phonename VALUES ('', 'LG'),('','HTC'),('','MOTOROLA'),('','LENOVO'),('','XIAOMI'),('','GOOGLE'),('','HONOR'),('','OPPO'),('','REALME'),('','ONEPLUS'),('','NOTHING'),('','VIVO'),('','MEIZU'),('','ASUS'),('','ALCATEL'),('','ZTE'),('','MICROSOFT'),('','UMIDIGI'),('','ENERGIZER'),('','CAT'),('','SHARP'),('','SHARP'),('','MICROMAX'),('','INFINIX'),('','ULEFONE'),('','TECNO'),('','DOOGEE'),('','BLACKVIEW'),('','CUBOT'),('','ITEL'),('','TCL')";
-    // mysqli_query($conn, $np);
+  // looping
+  while ($rd = mysqli_fetch_array($ds)) {
+    $as[] = $rd;
+  }
+  return $as;
+}
+
+// $np = "INSERT INTO phonename VALUES ('', 'LG'),('','HTC'),('','MOTOROLA'),('','LENOVO'),('','XIAOMI'),('','GOOGLE'),('','HONOR'),('','OPPO'),('','REALME'),('','ONEPLUS'),('','NOTHING'),('','VIVO'),('','MEIZU'),('','ASUS'),('','ALCATEL'),('','ZTE'),('','MICROSOFT'),('','UMIDIGI'),('','ENERGIZER'),('','CAT'),('','SHARP'),('','SHARP'),('','MICROMAX'),('','INFINIX'),('','ULEFONE'),('','TECNO'),('','DOOGEE'),('','BLACKVIEW'),('','CUBOT'),('','ITEL'),('','TCL')";
+// mysqli_query($conn, $np);
 
 
-    // membuat function untuk menambahkan data dari get
-    function addData($data){
-        global $conn;
+// membuat function untuk menambahkan data dari get
+function addData($data)
+{
+  global $conn;
 
-        // menangkap data
-        $name = htmlspecialchars($data["name"]);
-        $launch = htmlspecialchars($data["launch"]);
-        $display = htmlspecialchars($data["display"]);
-        $chipset = htmlspecialchars($data["chipset"]);
-        $os = htmlspecialchars($data["os"]);
-        $ram = htmlspecialchars($data["ram"]);
-        $camera = htmlspecialchars($data["camera"]);
-        $battery = htmlspecialchars($data["battery"]);
-        $price = htmlspecialchars($data["price"]);
-        // $image = htmlspecialchars($data["image"]);
+  // menangkap data
+  $name = htmlspecialchars($data["name"]);
+  $launch = htmlspecialchars($data["launch"]);
+  $display = htmlspecialchars($data["display"]);
+  $chipset = htmlspecialchars($data["chipset"]);
+  $os = htmlspecialchars($data["os"]);
+  $ram = htmlspecialchars($data["ram"]);
+  $camera = htmlspecialchars($data["camera"]);
+  $battery = htmlspecialchars($data["battery"]);
+  $price = htmlspecialchars($data["price"]);
+  // $image = htmlspecialchars($data["image"]);
 
-        $image = upload();
-        if(!$image){
-            return false;
-        }
+  $image = upload();
+  if (!$image) {
+    return false;
+  }
 
-        // menambahkan data
-        $add = "INSERT INTO allsmartphone VALUES ('','$name','$launch','$display','$chipset','$os','$ram','$camera','$battery','$price','$image')";
+  // menambahkan data
+  $add = "INSERT INTO allsmartphone VALUES ('','$name','$launch','$display','$chipset','$os','$ram','$camera','$battery','$price','$image')";
 
-        // mysqli connect
-        mysqli_query($conn, $add);
+  // mysqli connect
+  mysqli_query($conn, $add);
 
-    
-        // mengembalikan nilai antara 1 (success) or -1 (error)
-        return mysqli_affected_rows($conn);
-    }
 
-    function upload(){
-        $name_file = $_FILES["image"]["name"];
-        $type_file = $_FILES["image"]["type"];
-        $tmp_file = $_FILES["image"]["tmp_name"];
-        $size_file = $_FILES["image"]["size"];
-        $error_sts = $_FILES["image"]["error"];
-        $directory = 'smartphone/';
+  // mengembalikan nilai antara 1 (success) or -1 (error)
+  return mysqli_affected_rows($conn);
+}
 
-        //cek gambar jika tidak diupload
-        if($error_sts == 4){
-            return 'phone.jpg';
-        }
+function upload()
+{
+  $name_file = $_FILES["image"]["name"];
+  $type_file = $_FILES["image"]["type"];
+  $tmp_file = $_FILES["image"]["tmp_name"];
+  $size_file = $_FILES["image"]["size"];
+  $error_sts = $_FILES["image"]["error"];
+  $directory = 'smartphone/';
 
-        //validasi extensi image
-        $image_extension = ["jpg","jpeg","png"];
-        $extension = explode(".",$name_file);
-        $extension = strtolower(end($extension));
+  //cek gambar jika tidak diupload
+  if ($error_sts == 4) {
+    return 'phone.jpg';
+  }
 
-        if(!in_array($extension, $image_extension)){
-            echo "<script>
+  //validasi extensi image
+  $image_extension = ["jpg", "jpeg", "png"];
+  $extension = explode(".", $name_file);
+  $extension = strtolower(end($extension));
+
+  if (!in_array($extension, $image_extension)) {
+    echo "<script>
                 alert('silahkan masukan extensi image yang sesuai!');
             </script>";
-            return false;
-        }
+    return false;
+  }
 
-        //cek type image validasi
-        if(!$type_file == 'image.jpg' && !$type_file == 'image.png'){
-            echo "<script>
+  //cek type image validasi
+  if (!$type_file == 'image.jpg' && !$type_file == 'image.png') {
+    echo "<script>
                 alert('anda memasukan selain gambar!')
             </script>";
-            return false;
-        }
+    return false;
+  }
 
-        // cek size image
-        if($size_file > 5000000){
-            echo "<script>
+  // cek size image
+  if ($size_file > 5000000) {
+    echo "<script>
                 alert('image yang anda masukan terlalu besar!')
             </script>";
-            return false;
-        }
+    return false;
+  }
 
-        $random = uniqid();
-        $random .= '.';
-        $random .= $extension;
-
-
-        // return upload image
-        move_uploaded_file($tmp_file, $directory.$random);
-        return $random;
-    }
+  $random = uniqid();
+  $random .= '.';
+  $random .= $extension;
 
 
-    // membuat function untuk menghapus data
-    function dell($id){
-        global $conn;
-
-        // delete image from directory 
-        $phone = query("SELECT * FROM allsmartphone WHERE id = $id")[0];
-
-        if($phone["image"] != 'phone.jpg'){
-            unlink('smartphone/' . $phone["image"]);
-        }
-
-        // menghapus data dari database
-        $de = "DELETE FROM allsmartphone WHERE id = $id";
+  // return upload image
+  move_uploaded_file($tmp_file, $directory . $random);
+  return $random;
+}
 
 
-        // query
-        mysqli_query($conn, $de);
+// membuat function untuk menghapus data
+function dell($id)
+{
+  global $conn;
 
-        // mengembalikan nilai antara 1 (success) & -1 (error)
-        return mysqli_affected_rows($conn);
-    }
+  // delete image from directory 
+  $phone = query("SELECT * FROM allsmartphone WHERE id = $id")[0];
 
-    // membuat function untuk mengedit data dalam database
-    function edit($data){
-        global $conn;
+  if ($phone["image"] != 'phone.jpg') {
+    unlink('smartphone/' . $phone["image"]);
+  }
 
-        // menangkap data
-        $id = $data["id"];
-        $name = htmlspecialchars($data["name"]);
-        $launch = htmlspecialchars($data["launch"]);
-        $display = htmlspecialchars($data["display"]);
-        $chipset = htmlspecialchars($data["chipset"]);
-        $os = htmlspecialchars($data["os"]);
-        $ram = htmlspecialchars($data["ram"]);
-        $camera = htmlspecialchars($data["camera"]);
-        $battery = htmlspecialchars($data["battery"]);
-        $price = htmlspecialchars($data["price"]);
-        $image_last = htmlspecialchars($data["image_last"]);
+  // menghapus data dari database
+  $de = "DELETE FROM allsmartphone WHERE id = $id";
 
-        $image = upload();
-        if(!$image){
-            return false;
-        }
 
-        if($image == 'phone.jpg'){
-            $image = $image_last;
-        }
+  // query
+  mysqli_query($conn, $de);
 
-        // menambahkan data
-        $add = "UPDATE allsmartphone SET
+  // mengembalikan nilai antara 1 (success) & -1 (error)
+  return mysqli_affected_rows($conn);
+}
+
+// membuat function untuk mengedit data dalam database
+function edit($data)
+{
+  global $conn;
+
+  // menangkap data
+  $id = $data["id"];
+  $name = htmlspecialchars($data["name"]);
+  $launch = htmlspecialchars($data["launch"]);
+  $display = htmlspecialchars($data["display"]);
+  $chipset = htmlspecialchars($data["chipset"]);
+  $os = htmlspecialchars($data["os"]);
+  $ram = htmlspecialchars($data["ram"]);
+  $camera = htmlspecialchars($data["camera"]);
+  $battery = htmlspecialchars($data["battery"]);
+  $price = htmlspecialchars($data["price"]);
+  $image_last = htmlspecialchars($data["image_last"]);
+
+  $image = upload();
+  if (!$image) {
+    return false;
+  }
+
+  if ($image == 'phone.jpg') {
+    $image = $image_last;
+  }
+
+  // menambahkan data
+  $add = "UPDATE allsmartphone SET
                 name = '$name',
                 launch = '$launch',
                 display = '$display',
@@ -165,65 +170,58 @@
                 image = '$image'
                 WHERE id = '$id'";
 
-        // mysqli connect
-        mysqli_query($conn, $add);
-    
-        // mengembalikan nilai antara 1 (success) or -1 (error)
-        return mysqli_affected_rows($conn);
-    }
+  // mysqli connect
+  mysqli_query($conn, $add);
 
-    function search($keyword){
-        $d = "SELECT * FROM allsmartphone WHERE name LIKE '%$keyword%' OR price LIKE '%$keyword%'";
-        return query($d);
+  // mengembalikan nilai antara 1 (success) or -1 (error)
+  return mysqli_affected_rows($conn);
+}
 
-    }
-
-
-    function register($data){
-        global $conn;
-        
-        $username = stripslashes($data["username"]);
-        $password = mysqli_real_escape_string($conn,$data["password"]);
-        $password2 = mysqli_real_escape_string($conn,$data["password2"]);
+function search($keyword)
+{
+  $d = "SELECT * FROM allsmartphone WHERE name LIKE '%$keyword%' OR price LIKE '%$keyword%'";
+  return query($d);
+}
 
 
-        $samename = mysqli_query($conn, "SELECT username FROM user WHERE username = '$username'");
+function register($data)
+{
+  global $conn;
 
-        if(mysqli_fetch_assoc($samename)){
-            echo "<script>
+  $username = stripslashes($data["username"]);
+  $password = mysqli_real_escape_string($conn, $data["password"]);
+  $password2 = mysqli_real_escape_string($conn, $data["password2"]);
+
+
+  $samename = mysqli_query($conn, "SELECT username FROM user WHERE username = '$username'");
+
+  if (mysqli_fetch_assoc($samename)) {
+    echo "<script>
                 alert('invalid username, please input the username yang ada');
             </script>";
-        
-            return false;
-        }
 
-        if($password !== $password2){
-            echo "<script>
+    return false;
+  }
+
+  if ($password !== $password2) {
+    echo "<script>
                 alert('silahkan masukan konfirmasi password yang benar sesuai yang pertama')
             </script>";
 
-            return false;
-        }
+    return false;
+  }
 
-        if($username == '' && $password == ''){
-            echo "<script>
+  if ($username == '' && $password == '') {
+    echo "<script>
                 alert('silahkan masukan data dengan benar')
             </script>";
 
-            return false ;
-        }
+    return false;
+  }
 
-        $password = password_hash($password,PASSWORD_DEFAULT);
+  $password = password_hash($password, PASSWORD_DEFAULT);
 
-        mysqli_query($conn,"INSERT INTO user VALUES ('','$username','$password')");
+  mysqli_query($conn, "INSERT INTO user VALUES ('','$username','$password')");
 
-        return mysqli_affected_rows($conn);
-    }
-
-
-
-
-
-
-
-?>
+  return mysqli_affected_rows($conn);
+}
